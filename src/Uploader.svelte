@@ -3,7 +3,7 @@
   let avatar, fileinput;
   let result = "";
   let playlistName = "";
-
+  let src = "/images/silence.png";
   let leftSideItems = [
     { value: "Artist", label: "Artist" },
     { value: "Song", label: "Song" }
@@ -31,23 +31,23 @@
   };
 
   async function doPost() {
-    result = "";
-    const blob = await fetch(avatar).then(res => res.blob());
+    // result = "";
+    // const blob = await fetch(avatar).then(res => res.blob());
 
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append("file", blob);
-    formData.append("leftSide", leftSide);
-    formData.append("separator", separatorValue);
-    formData.append("playlistName", playlistName);
+    // formData.append("file", blob);
+    // formData.append("leftSide", leftSide);
+    // formData.append("separator", separatorValue);
+    // formData.append("playlistName", playlistName);
 
-    const res = await fetch("http://localhost:3000/detectText", {
-      method: "POST",
-      body: formData
-    });
+    // const res = await fetch("http://localhost:3000/detectText", {
+    //   method: "POST",
+    //   body: formData
+    // });
 
-    const json = await res.json();
-    result = JSON.parse(JSON.stringify(json));
+    // const json = await res.json();
+    // result = JSON.parse(JSON.stringify(json));
 
     return false;
   }
@@ -64,110 +64,135 @@
 </script>
 
 <style>
-
-  :global(body) {
-    background-image: url("https://besthqwallpapers.com/Temp/8-3-2021/4k-old-paper-texture-close-up-brown-paper-paper-backgrounds-besthqwallpapers.com-1680x1050.jpg");
-    height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  #app {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-flow: column;
-    overflow: hidden;
+  .input-style {
+    border: 2px solid black;
+    text-align: center;
   }
 
-  .empty {
-    padding-bottom: 35px;
-  }
-
-  .upload {
-    /* display: block; */
-    height: 50px;
-    width: 50px;
-    cursor: pointer;
-  }
-  .avatar {
-    /* display: flex; */
-    height: 200px;
-    width: 200px;
-  }
-
-  #form {
-    display: block !important;
-  }
+  /* input {
+        text-align: center;
+      }
+      ::-webkit-input-placeholder {
+        text-align: center;
+      }
+      :-moz-placeholder {
+        text-align: center;
+      } */
 </style>
 
-<div id="main">
-  <div id="app">
-    <form id="form" enctype="multipart/form-data" method="POST">
-      <h1>Upload Image</h1>
+<div id="main" class="font-mono flex flex-col h-screen py-10">
 
-      {#if avatar}
-        <img class="avatar" src={avatar} alt="d" />
+  <div>
+    <form id="form" enctype="multipart/form-data" method="POST">
+
+      <div class="flex justify-center align-center items-center">
+        <img
+          src="https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png"
+          alt=""
+          class="md:h-96 object-cover md:w-1/3 object-center w-3/4" />
+
+      </div>
+
+      <div class="flex justify-center font-normal">
+      <div class="md:w-1/3 underline tracking-tighter w-4/5 ml-4 md:ml-0 ">
+      This just looks nice
+      
+      </div>
+      </div>
+
+      {#if avatar} 
+        <img src={avatar} alt="d" />
       {:else}
         <!-- <img class="avatar" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="" />  -->
       {/if}
-      <img
-        class="upload"
-        src="https://static.thenounproject.com/png/625182-200.png"
-        alt=""
-        on:click={() => {
-          fileinput.click();
-        }} />
+      <div class="flex justify-center align-center items-center ml-">
+
+        <!-- <div
+          class="my-5 md:w-1/5 w-2/5 border border-black bg-black text-white
+          text-center focus:outline-black hover:bg-black hover:opacity-90"> -->
+        <button
+          alt="Upload button"
+          class="w-1/2 md:w-1/7 my-5 focus:outline-none hover:bg-black
+          hover:opacity-90 border border-black bg-black text-white p-2
+          align-center"
+          on:click={() => {
+            fileinput.click();
+          }}>
+          Upload Image
+        </button>
+        <!-- </div> -->
+      </div>
 
       {#if avatar}
         <button on:click|preventDefault={removeImage}>Remove Image</button>
       {/if}
-      <div />
-      <!-- <div
-                class="chan"
-                on:click={() => {
-                    fileinput.click();
-                }}
-            >
-                Choose Image
-            </div> -->
 
-      <input
-        style="display:none"
-        type="file"
-        accept=".jpg, .jpeg, .png"
-        on:change={e => onFileSelected(e)}
-        bind:this={fileinput}
-        name="file" />
-      <p>What's on left</p>
-      <Select
-        items={leftSideItems}
-        selectedValue={leftSide}
-        on:select={handleSelect}
-        isClearable={false}
-        showIndicator={true}
-        listAutoWidth={false} />
-      <p>What's separator</p>
-      <Select
-        items={separators}
-        selectedValue={separatorValue}
-        on:select={handleSelectTwo}
-        isClearable={false}
-        showIndicator={true}
-        listAutoWidth={false} />
-      <div class="empty" />
-      <label for="playlistName">Playlist Name</label>
-      <input
-        type="text"
-        placeholder="(Optional)"
-        name="playlistName"
-        id="playlistName"
-        bind:value={playlistName} />
+      <div
+        class="justify-center align-center items-center md:space-x-20 flex
+        flex-col md:flex-row space-y-5 md:space-y-0">
+        <div class="md:w-1/7 w-3/4 ">
 
-      <div />
-      <button type="submit" on:click|preventDefault={doPost}>
-        Generate playlist
-      </button>
+          <input
+            style="display:none"
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            on:change={e => onFileSelected(e)}
+            bind:this={fileinput}
+            name="file" />
+          <p class="underline mb-1 font-bold">What's left?</p>
+          <Select
+            items={leftSideItems}
+            selectedValue={leftSide}
+            on:select={handleSelect}
+            isClearable={false}
+            listAutoWidth={false}
+            containerStyles="border: 3px solid black; text-align:
+            center;border-radius:0;font-weight:bold;" />
+        </div>
+
+        <div class="md:w-1/7 w-3/4 ">
+          <p class="underline mb-1 font-bold">Separator</p>
+          <Select
+            items={separators}
+            selectedValue={separatorValue}
+            on:select={handleSelectTwo}
+            isClearable={false}
+            listAutoWidth={false}
+            containerStyles="border: 3px solid black; text-align: center;
+            border-radius:0;font-weight:bold;font-size:20px;" />
+        </div>
+
+      </div>
+
+      <div class="flex justify-center align-center items-center">
+        <div class="w-3/4 md:w-1/3">
+
+          <input
+            type="text"
+            placeholder="Playlist name(optional)"
+            name="playlistName"
+            id="playlistName"
+            bind:value={playlistName}
+            class="w-full h-8 border-black p-5 mt-5 mb-5 items-center border-3
+            flex-auto" />
+        </div>
+      </div>
+
+      <div class="flex justify-center align-center items-center">
+
+        <div class="w-1/2 md:w-1/7">
+
+          <button
+            type="submit"
+            on:click|preventDefault={doPost}
+            class="w-full h-12 flex items-center justify-center bg-kinda-green
+            text-black font-bold border border-black shadow-offset-black mb-5
+            focus:outline-black hover:bg-kinda-green hover:opacity-90 ">
+            Generate playlist
+          </button>
+        </div>
+      </div>
+
       <pre>
         {#if result}
           <a href={result.data.url}>{result.data.name}- {result.data.url}</a>
@@ -176,6 +201,26 @@
       </pre>
     </form>
 
-    <a href="http://localhost:3000/spotifyLogin">Log in with spotify</a>
+    <div class="flex justify-center">
+      <a href="http://localhost:3000/spotifyLogin">Log in with spotify</a>
+
+    </div>
+
   </div>
+
+  <footer class="py-5 h-5">
+
+    <div class="container mx-auto px-6 font-thin">
+      <div class=" flex flex-col mb-20 items-center">
+        <div class="sm:w-2/3 text-center py-6">
+          <p class="text-sm text-black mb-2">
+            Made by
+            <a href="https://instagram.com/restacksyj" class="underline">
+              @restacksyj
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>

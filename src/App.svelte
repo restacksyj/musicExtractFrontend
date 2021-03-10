@@ -2,6 +2,7 @@
 import ImageCropper from "./ImageCropper.svelte";
 import ImageUploader from "./ImageUploader.svelte";
 import Uploader from "./Uploader.svelte"
+
 // export let name;
 
 // let avatar="";
@@ -34,8 +35,11 @@ import Uploader from "./Uploader.svelte"
 	
 </main>
 
-<style>
-	main {
+<style global>
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+	/* main {
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;
@@ -59,5 +63,5 @@ import Uploader from "./Uploader.svelte"
 		main {
 			max-width: none;
 		}
-	}
+	} */
 </style>
