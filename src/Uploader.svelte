@@ -80,7 +80,7 @@
       } */
 </style>
 
-<div id="main" class="font-mono flex flex-col h-screen py-10">
+<div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
 
   <div>
     <form id="form" enctype="multipart/form-data" method="POST">
@@ -94,13 +94,12 @@
       </div>
 
       <div class="flex justify-center font-normal">
-      <div class="md:w-1/3 underline tracking-tighter w-4/5 ml-4 md:ml-0 ">
-      This just looks nice
-      
-      </div>
+        <div class="md:w-1/3 underline tracking-tighter w-4/5 ml-4 md:ml-0 ">
+          This just looks nice
+        </div>
       </div>
 
-      {#if avatar} 
+      {#if avatar}
         <img src={avatar} alt="d" />
       {:else}
         <!-- <img class="avatar" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="" />  -->
@@ -201,10 +200,40 @@
       </pre>
     </form>
 
-    <div class="flex justify-center">
+    <!-- <div class="flex justify-center">
       <a href="http://localhost:3000/spotifyLogin">Log in with spotify</a>
 
+    </div> -->
+
+    <!-- {#if result} -->
+
+    <div class="flex-col justify-center">
+      <!-- <a href={result.data.url}>{result.data.name}- {result.data.url}</a> -->
+      <div class=" w-full md:flex-col">
+        <p class="w-4/5 ml-14 md:ml-8 underline text-left md:text-center md:w-2/3 ">Name:</p>
+        <p class="text-left w-4/5 ml-14 md:ml-0 mb-4 md:text-center ">John Mayer and friends</p>
+      </div>
+
+      <div class=" w-full  md:w-full">
+        <!-- <p class="underline text-left w-4/5 ml-14 md:ml-0 mb-4">Link:</p> -->
+        <p class="bg-black text-white font-bold p-2 text-center">
+          https://open.spotify.com/dbdbeudeded
+        </p>
+      </div>
+
+      <!-- <div class="md:w-1/3">
+        <p class="pb-2">Name: John Mayer and friends</p>
+        <p>
+          Link:
+          <span class="bg-black text-white font-bold p-2">
+            https://open.spotify.com/dbdbeudeded
+          </span>
+        </p>
+
+      </div> -->
+
     </div>
+    <!-- {/if} -->
 
   </div>
 
