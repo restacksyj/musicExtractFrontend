@@ -64,25 +64,20 @@
 </script>
 
 <style>
-  .input-style {
-    border: 2px solid black;
-    text-align: center;
+   .themed {
+    --itemColor:black;
+    --itemIsActiveColor:white;
+    --itemIsActiveBG:black;
+    --itemHoverBG:rgba(0,0,0,0.1)
+
+  
   }
 
-  /* input {
-        text-align: center;
-      }
-      ::-webkit-input-placeholder {
-        text-align: center;
-      }
-      :-moz-placeholder {
-        text-align: center;
-      } */
 </style>
 
 <div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
 
-  <div>
+  <div class="themed">
     <form id="form" enctype="multipart/form-data" method="POST">
 
       <div class="flex justify-center align-center items-center">
@@ -127,7 +122,7 @@
       {/if}
 
       <div
-        class="justify-center align-center items-center md:space-x-20 flex
+        class="justify-center align-center items-center lg:space-x-20  md:space-x-12 flex
         flex-col md:flex-row space-y-5 md:space-y-0">
         <div class="md:w-1/7 w-3/4 ">
 
@@ -211,10 +206,10 @@
       <!-- <a href={result.data.url}>{result.data.name}- {result.data.url}</a> -->
       <div class=" w-full md:flex-col">
         <p class="w-4/5 ml-14 md:ml-8 underline text-left md:text-center md:w-2/3 ">Name:</p>
-        <p class="text-left w-4/5 ml-14 md:ml-0 mb-4 md:text-center ">John Mayer and friends</p>
+        <p class="text-left w-4/5 md:w-4/5 lg:w-4/5 ml-14 md:ml-0 mb-4 md:text-center ">John Mayer and friends</p>
       </div>
 
-      <div class=" w-full  md:w-full">
+      <div class=" w-full md:w-full">
         <!-- <p class="underline text-left w-4/5 ml-14 md:ml-0 mb-4">Link:</p> -->
         <p class="bg-black text-white font-bold p-2 text-center">
           https://open.spotify.com/dbdbeudeded
