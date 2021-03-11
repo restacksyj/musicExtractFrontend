@@ -1,22 +1,22 @@
 <script>
   import Select from "svelte-select";
-   import { FileUploaderButton } from "carbon-components-svelte";
-   import { onDestroy } from "svelte";
+  import { toast } from '@zerodevx/svelte-toast'
+  import * as animateScroll from "svelte-scrollto";
   let avatar;
   let fileinput;
-  let files;
+  let images=[];
   let result = "";
   let playlistName = "";
 
   let state = "none";
 
   const stateMap = {
-      "none":"disable",
-      "present":"enable"
-  }
+    none: "disable",
+    present: "enable"
+  };
 
-
-  let src = "https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png";
+  let src =
+    "https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png";
 
   let leftSideItems = [
     { value: "Artist", label: "Artist" },
@@ -32,10 +32,13 @@
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
 
-  const changeUploadStatus = status =>  state=status;
+  const changeUploadStatus = status => (state = status);
 
   const onFileSelected = e => {
     let image = e.target.files[0];
+    images.push(image.name)
+    state="present"
+    console.log(images.length)
     let reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
@@ -45,10 +48,18 @@
 
   const removeImage = () => {
     avatar = "";
+    // state="none"
+    images = []
+     console.log(images.length)
+    // console.log(avatar)
+    // console.log(state)
+    // console.log(images)
   };
 
   async function doPost() {
-    result = "";
+    console.log(state)
+    if( images.length==1 && avatar!=="" ){
+      result = "";
     const blob = await fetch(avatar).then(res => res.blob());
 
     const formData = new FormData();
@@ -65,9 +76,16 @@
 
     const json = await res.json();
     result = JSON.parse(JSON.stringify(json));
-
+    
     return false;
+    }else{
+      const id= toast.push("Duhhh, I need image")
+      setTimeout(()=>toast.pop(id),750)
+    }
+    
   }
+
+  
 
   function handleSelect(event) {
     const detail = event.detail;
@@ -86,7 +104,29 @@
     --itemIsActiveColor: white;
     --itemIsActiveBG: black;
     --itemHoverBG: rgba(0, 0, 0, 0.1);
+    
   }
+
+  .btn-active{
+	  @apply w-full h-12 flex items-center justify-center bg-kinda-green text-black font-bold border border-black shadow-offset-black mb-5;
+  }
+  .btn-active:focus{
+   @apply outline-black;
+  }
+  .btn-active:hover{
+   @apply opacity-90 bg-kinda-green;
+  }
+  /* .btn-disable{
+	  @apply w-full h-12 flex items-center justify-center bg-blue-300 text-black font-bold border border-black shadow-offset-black mb-5;
+  } */
+
+  /* .btn-disable:focus{
+   @apply outline-black;
+  }
+  .btn-disable:hover{
+   @apply opacity-90 bg-kinda-green;
+  } */
+
 </style>
 
 <div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
@@ -94,43 +134,38 @@
   <div class="themed">
     <form id="form" enctype="multipart/form-data" method="POST">
 
+      {#if avatar}
+        <div class="flex justify-center align-center items-center">
+          <img
+            src={avatar}
+            alt=""
+            class="md:h-96 object-cover md:w-1/3 object-center w-3/4 border-3
+            border-black" />
 
-     {#if avatar}
-     <div class="flex justify-center align-center items-center">
-        <img
-          src="{avatar}"
-          alt=""
-          class="md:h-96 object-cover md:w-1/3 object-center w-3/4  border-3 border-black" />
-
-      </div>
-
-
-
-      <div class="flex justify-center font-normal">
-        <div on:click|preventDefault={removeImage} class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0 ">
-          Remove 
         </div>
-      </div>
-        
 
-      
-
-
-       {:else}
-      <div class="flex justify-center align-center items-center">
-        <img
-          src="https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png"
-          alt=""
-          class="md:h-96 object-cover md:w-1/3 object-center w-3/4" />
-
-      </div>
-
-      <div class="flex justify-center font-normal">
-        <div class="md:w-1/3 underline tracking-tighter w-4/5 ml-4 md:ml-0 " >
-          This just looks nice
+        <div class="flex justify-center font-normal">
+          <div
+            on:click|preventDefault={removeImage}
+            class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0 cursor-pointer">
+            Remove
+          </div>
         </div>
-      </div>
-      
+      {:else}
+        <div class="flex justify-center align-center items-center">
+          <img
+            src="https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png"
+            alt=""
+            class="md:h-96 object-cover md:w-1/3 object-center w-3/4" />
+
+        </div>
+
+        <div class="flex justify-center font-normal">
+          <div class="md:w-1/3 underline tracking-tighter w-4/5 ml-4 md:ml-0 ">
+            This just looks nice
+          </div>
+        </div>
+
         <!-- <img class="avatar" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="" />  -->
       {/if}
       <div class="flex justify-center align-center items-center ml-">
@@ -138,24 +173,27 @@
         <!-- <div
           class="my-5 md:w-1/5 w-2/5 border border-black bg-black text-white
           text-center focus:outline-black hover:bg-black hover:opacity-90"> -->
-          <!-- <FileUploaderButton labelText="" accept={['.jpg', '.jpeg','.png']} /> -->
-          <!-- <img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} /> -->
+        <!-- <FileUploaderButton labelText="" accept={['.jpg', '.jpeg','.png']} /> -->
+        <!-- <img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} /> -->
         <div
           alt="Upload button"
           class="w-1/2 md:w-1/7 my-5 focus:outline-none hover:bg-black
           hover:opacity-90 border border-black bg-black text-white p-2
-          align-center text-center"
-          on:click={() => {fileinput.click();}}>
-          
+          align-center text-center cursor-pointer"
+          on:click={() => {
+            fileinput.click();
+          }}>
           Upload Image
-         
         </div>
         <!-- </div> -->
       </div>
 
-    <input type="file" accept=".jpg, .jpeg, .png"  on:change={(e) => onFileSelected(e)} class="invisible w-0 h-0 block" bind:this={fileinput}>
-
-
+      <input
+        type="file"
+        accept=".jpg, .jpeg, .png"
+        on:change={e => onFileSelected(e)}
+        class="invisible w-0 h-0 block"
+        bind:this={fileinput} />
 
       <div
         class="justify-center align-center items-center lg:space-x-20
@@ -203,8 +241,8 @@
             name="playlistName"
             id="playlistName"
             bind:value={playlistName}
-            class="w-full h-8 border-black px-4 py-5 mt-5 mb-5 items-center border-3
-            flex-auto" />
+            class="w-full h-8 border-black px-4 py-5 mt-5 mb-5 items-center
+            border-3 flex-auto" />
         </div>
       </div>
 
@@ -215,9 +253,7 @@
           <button
             type="submit"
             on:click|preventDefault={doPost}
-            class="w-full h-12 flex items-center justify-center bg-kinda-green
-            text-black font-bold border border-black shadow-offset-black mb-5
-            focus:outline-black hover:bg-kinda-green hover:opacity-90 ">
+            class="btn-active">
             Generate playlist
           </button>
         </div>
