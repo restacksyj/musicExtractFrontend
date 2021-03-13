@@ -1,14 +1,16 @@
 <script>
   import Select from "svelte-select";
-  import { toast } from '@zerodevx/svelte-toast'
-  import * as animateScroll from "svelte-scrollto";
+  import { toast } from "@zerodevx/svelte-toast";
+  // import {Modal,Button } from 'svelma';
+
   let avatar;
   let fileinput;
-  let images=[];
+  let images = [];
   let result = "";
   let playlistName = "";
 
   let state = "none";
+  let active = true;
 
   const stateMap = {
     none: "disable",
@@ -36,9 +38,9 @@
 
   const onFileSelected = e => {
     let image = e.target.files[0];
-    images.push(image.name)
-    state="present"
-    console.log(images.length)
+    images.push(image.name);
+    state = "present";
+    console.log(images.length);
     let reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
@@ -49,43 +51,55 @@
   const removeImage = () => {
     avatar = "";
     // state="none"
-    images = []
-     console.log(images.length)
+    images = [];
+    console.log(images.length);
     // console.log(avatar)
     // console.log(state)
     // console.log(images)
   };
 
   async function doPost() {
-    console.log(state)
-    if( images.length==1 && avatar!=="" ){
+    active = true;
+    console.log(state);
+    if (images.length == 1 && avatar !== "") {
       result = "";
-    const blob = await fetch(avatar).then(res => res.blob());
+      const blob = await fetch(avatar).then(res => res.blob());
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append("file", blob);
-    formData.append("leftSide", leftSide);
-    formData.append("separator", separatorValue);
-    formData.append("playlistName", playlistName);
+      formData.append("file", blob);
+      formData.append("leftSide", leftSide);
+      formData.append("separator", separatorValue);
+      formData.append("playlistName", playlistName);
 
-    const res = await fetch("http://localhost:3000/detectText", {
-      method: "POST",
-      body: formData
-    });
+      try {
+        const res = await fetch("http://localhost:3000/detectText", {
+          method: "POST",
+          body: formData
+        });
+        const json = await res.json();
+        const parsedJson = JSON.parse(JSON.stringify(json));
+        console.log(parsedJson);
+        if (parsedJson.error) {
+          toast.push(`It's ${parsedJson.code} :( ${parsedJson.error}`);
+          setTimeout(() => toast.pop(), 1000);
+        } else {
+          result = parsedJson;
 
-    const json = await res.json();
-    result = JSON.parse(JSON.stringify(json));
-    
-    return false;
-    }else{
-      const id= toast.push("Duhhh, I need image")
-      setTimeout(()=>toast.pop(id),750)
+          toast.push("Done!");
+          setTimeout(() => toast.pop(), 750);
+        }
+      } catch (e) {
+        console.log(e);
+        // res.send({"error":"Something went wrong"})
+      }
+
+      return false;
+    } else {
+      const id = toast.push("Duhhh, I need image");
+      setTimeout(() => toast.pop(id), 750);
     }
-    
   }
-
-  
 
   function handleSelect(event) {
     const detail = event.detail;
@@ -104,17 +118,16 @@
     --itemIsActiveColor: white;
     --itemIsActiveBG: black;
     --itemHoverBG: rgba(0, 0, 0, 0.1);
-    
   }
 
-  .btn-active{
-	  @apply w-full h-12 flex items-center justify-center bg-kinda-green text-black font-bold border border-black shadow-offset-black mb-5;
+  .btn-active {
+    @apply w-full h-12 flex items-center justify-center bg-kinda-green text-black font-bold border border-black shadow-offset-black mb-5;
   }
-  .btn-active:focus{
-   @apply outline-black;
+  .btn-active:focus {
+    @apply outline-black;
   }
-  .btn-active:hover{
-   @apply opacity-90 bg-kinda-green;
+  .btn-active:hover {
+    @apply opacity-90 bg-kinda-green;
   }
   /* .btn-disable{
 	  @apply w-full h-12 flex items-center justify-center bg-blue-300 text-black font-bold border border-black shadow-offset-black mb-5;
@@ -126,7 +139,6 @@
   .btn-disable:hover{
    @apply opacity-90 bg-kinda-green;
   } */
-
 </style>
 
 <div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
@@ -147,7 +159,8 @@
         <div class="flex justify-center font-normal">
           <div
             on:click|preventDefault={removeImage}
-            class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0 cursor-pointer">
+            class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0
+            cursor-pointer">
             Remove
           </div>
         </div>
@@ -284,14 +297,16 @@
           <p
             class="text-left w-4/5 md:w-4/5 lg:w-4/5 ml-14 md:ml-0 mb-4
             md:text-center ">
-            {result.data.name}
+            {#if result.data}{result.data.name}{/if}
           </p>
         </div>
 
         <div class=" w-full md:w-full">
           <!-- <p class="underline text-left w-4/5 ml-14 md:ml-0 mb-4">Link:</p> -->
           <p class="bg-black text-white font-bold p-2 text-center">
-            <a href={result.data.url}>{result.data.url}</a>
+            {#if result.data}
+              <a href={result.data.url}>{result.data.url}</a>
+            {/if}
           </p>
         </div>
 
