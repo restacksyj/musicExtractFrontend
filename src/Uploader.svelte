@@ -78,6 +78,7 @@
           setTimeout(() => toast.pop(), 1000);
         } else {
           active=false
+          console.log(result)
           result = parsedJson;
           toast.push("Done!");
           setTimeout(() => toast.pop(), 750);
@@ -127,6 +128,9 @@
   #uploadBtn{
     pointer-events: none;
   }
+  #removeBtn{
+    pointer-events: none;
+  }
 </style>
 
 <div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
@@ -146,6 +150,8 @@
 
         <div class="flex justify-center font-normal">
           <div
+           id="{active?"removeBtn":""}"
+           disabled={active}
             on:click|preventDefault={removeImage}
             class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0
             cursor-pointer">
