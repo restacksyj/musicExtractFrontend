@@ -29,7 +29,7 @@
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
   let active = false;
-  const spotifyLogin = globalThis.SPOTIFY_URL
+  const spotifyLogin = globalThis.SPOTIFY_LOGIN_URL
 
   const changeUploadStatus = status => (state = status);
 
@@ -263,7 +263,7 @@
     </form>
 
     <div class="flex justify-center">
-      <a href="{spotifyLogin}">Log in with spotify</a>
+      <a href={spotifyLogin}>Log in with spotify</a>
 
     </div>
 
