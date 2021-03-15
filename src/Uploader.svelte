@@ -29,7 +29,7 @@
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
   let active = false;
-  const spotifyLogin = __myapp.env.SPOTIFY_LOGIN_URL
+  const spotifyLogin = globalThis.SPOTIFY_URL
 
   const changeUploadStatus = status => (state = status);
 
@@ -65,7 +65,8 @@
       formData.append("playlistName", playlistName);
 
       try {
-        const res = await fetch(__myapp.env.API_URL, {
+        
+        const res = await fetch(globalThis.API_URL, {
           method: "POST",
           body: formData
         });
@@ -84,6 +85,7 @@
       } catch (e) {
         active=false
         toast.push("shhhhh something went wrong");
+         setTimeout(() => toast.pop(), 750);
       }
 
       return false;

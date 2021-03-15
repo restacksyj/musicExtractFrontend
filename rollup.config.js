@@ -1,3 +1,7 @@
+
+import dotenv from 'dotenv';
+dotenv.config();
+
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
@@ -5,8 +9,9 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import sveltePreprocess from "svelte-preprocess";
-import { config } from 'dotenv';
+
 import replace from '@rollup/plugin-replace';
+
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -41,16 +46,17 @@ export default {
 	},
 	plugins: [
 		replace({
-			// stringify the object       
-			__myapp: JSON.stringify({
-				env: {
-					isProd: production,
-					...config().parsed // attached the .env config
-				}
+			globalThis: production ? JSON.stringify({
+				API_URL: "https://guarded-springs-19284.herokuapp.com/detectText",
+				SPOTIFY_LOGIN_URL: "https://guarded-springs-19284.herokuapp.com/spotifyLogin",
+			}): JSON.stringify({
+				API_URL: "http://localhost:3000/detectText",
+				SPOTIFY_LOGIN_URL: "http://localhost:3000/spotifyLogin",
 			}),
 		}),
 		svelte({
 			preprocess: sveltePreprocess({
+				replace: [["process.env.API_URL", process.env.API_URL]],
 				sourceMap: !production,
 				postcss: true,
 			}),
@@ -59,6 +65,7 @@ export default {
 				dev: !production
 			}
 		}),
+		
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
