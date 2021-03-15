@@ -29,6 +29,7 @@
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
   let active = false;
+  const spotifyLogin = __myapp.env.SPOTIFY_LOGIN_URL
 
   const changeUploadStatus = status => (state = status);
 
@@ -64,7 +65,7 @@
       formData.append("playlistName", playlistName);
 
       try {
-        const res = await fetch(process.env.API_URL, {
+        const res = await fetch(__myapp.env.API_URL, {
           method: "POST",
           body: formData
         });
@@ -260,7 +261,7 @@
     </form>
 
     <div class="flex justify-center">
-      <a href="{process.env.SPOTIFY_LOGIN_UR}">Log in with spotify</a>
+      <a href="{spotifyLogin}">Log in with spotify</a>
 
     </div>
 
