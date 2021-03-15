@@ -1,7 +1,7 @@
 <script>
   import Select from "svelte-select";
   import { toast } from "@zerodevx/svelte-toast";
-  // import {Modal,Button } from 'svelma';
+  import {Pulse} from "svelte-loading-spinners";
 
   let avatar;
   let fileinput;
@@ -10,12 +10,7 @@
   let playlistName = "";
 
   let state = "none";
-  let active = true;
-
-  const stateMap = {
-    none: "disable",
-    present: "enable"
-  };
+  
 
   let src =
     "https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png";
@@ -33,6 +28,7 @@
 
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
+  let active = false;
 
   const changeUploadStatus = status => (state = status);
 
@@ -40,7 +36,6 @@
     let image = e.target.files[0];
     images.push(image.name);
     state = "present";
-    console.log(images.length);
     let reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
@@ -50,18 +45,14 @@
 
   const removeImage = () => {
     avatar = "";
-    // state="none"
     images = [];
-    console.log(images.length);
-    // console.log(avatar)
-    // console.log(state)
-    // console.log(images)
   };
 
   async function doPost() {
-    active = true;
-    console.log(state);
+   
+    
     if (images.length == 1 && avatar !== "") {
+       active = true;
       result = "";
       const blob = await fetch(avatar).then(res => res.blob());
 
@@ -73,25 +64,25 @@
       formData.append("playlistName", playlistName);
 
       try {
-        const res = await fetch("http://localhost:3000/detectText", {
+        const res = await fetch(process.env.API_URL, {
           method: "POST",
           body: formData
         });
         const json = await res.json();
         const parsedJson = JSON.parse(JSON.stringify(json));
-        console.log(parsedJson);
         if (parsedJson.error) {
+          active=false
           toast.push(`It's ${parsedJson.code} :( ${parsedJson.error}`);
           setTimeout(() => toast.pop(), 1000);
         } else {
+          active=false
           result = parsedJson;
-
           toast.push("Done!");
           setTimeout(() => toast.pop(), 750);
         }
       } catch (e) {
-        console.log(e);
-        // res.send({"error":"Something went wrong"})
+        active=false
+        toast.push("shhhhh something went wrong");
       }
 
       return false;
@@ -129,16 +120,10 @@
   .btn-active:hover {
     @apply opacity-90 bg-kinda-green;
   }
-  /* .btn-disable{
-	  @apply w-full h-12 flex items-center justify-center bg-blue-300 text-black font-bold border border-black shadow-offset-black mb-5;
-  } */
 
-  /* .btn-disable:focus{
-   @apply outline-black;
+  #uploadBtn{
+    pointer-events: none;
   }
-  .btn-disable:hover{
-   @apply opacity-90 bg-kinda-green;
-  } */
 </style>
 
 <div id="main" class="font-mono flex flex-col h-screen py-10 overflow-x-hidden">
@@ -178,27 +163,22 @@
             This just looks nice
           </div>
         </div>
-
-        <!-- <img class="avatar" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="" />  -->
       {/if}
       <div class="flex justify-center align-center items-center ml-">
 
-        <!-- <div
-          class="my-5 md:w-1/5 w-2/5 border border-black bg-black text-white
-          text-center focus:outline-black hover:bg-black hover:opacity-90"> -->
-        <!-- <FileUploaderButton labelText="" accept={['.jpg', '.jpeg','.png']} /> -->
-        <!-- <img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} /> -->
         <div
+        id="{active?"uploadBtn":""}"
           alt="Upload button"
           class="w-1/2 md:w-1/7 my-5 focus:outline-none hover:bg-black
           hover:opacity-90 border border-black bg-black text-white p-2
           align-center text-center cursor-pointer"
+          disabled={active}
           on:click={() => {
             fileinput.click();
           }}>
           Upload Image
         </div>
-        <!-- </div> -->
+
       </div>
 
       <input
@@ -264,20 +244,19 @@
         <div class="w-1/2 md:w-1/7">
 
           <button
+           disabled={active}
             type="submit"
             on:click|preventDefault={doPost}
             class="btn-active">
+            {#if active}
+            <Pulse color="#000000"/>
+            {:else}
             Generate playlist
+            {/if}
           </button>
         </div>
       </div>
 
-      <!-- <pre>
-        {#if result}
-          <a href={result.data.url}>{result.data.name}- {result.data.url}</a>
-        {/if}
-
-      </pre> -->
     </form>
 
     <div class="flex justify-center">
@@ -285,10 +264,11 @@
 
     </div>
 
-    {#if result}
+    {#if result.data}
       <div class="flex-col justify-center">
-        <!-- <a href={result.data.url}>{result.data.name}- {result.data.url}</a> -->
+
         <div class=" w-full md:flex-col">
+
           <p
             class="w-4/5 ml-14 md:ml-8 underline text-left md:text-center
             md:w-2/3 ">
@@ -297,29 +277,18 @@
           <p
             class="text-left w-4/5 md:w-4/5 lg:w-4/5 ml-14 md:ml-0 mb-4
             md:text-center ">
-            {#if result.data}{result.data.name}{/if}
+            {result.data.name}
           </p>
+
         </div>
 
         <div class=" w-full md:w-full">
-          <!-- <p class="underline text-left w-4/5 ml-14 md:ml-0 mb-4">Link:</p> -->
           <p class="bg-black text-white font-bold p-2 text-center">
-            {#if result.data}
-              <a href={result.data.url}>{result.data.url}</a>
-            {/if}
+
+            <a href={result.data.url}>{result.data.url}</a>
+
           </p>
         </div>
-
-        <!-- <div class="md:w-1/3">
-        <p class="pb-2">Name: John Mayer and friends</p>
-        <p>
-          Link:
-          <span class="bg-black text-white font-bold p-2">
-            https://open.spotify.com/dbdbeudeded
-          </span>
-        </p>
-
-      </div> -->
 
       </div>
     {/if}
