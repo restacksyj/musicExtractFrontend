@@ -260,7 +260,7 @@
     </form>
 
     <div class="flex justify-center">
-      <a href="http://localhost:3000/spotifyLogin">Log in with spotify</a>
+      <a href="{process.env.SPOTIFY_LOGIN_UR}">Log in with spotify</a>
 
     </div>
 
