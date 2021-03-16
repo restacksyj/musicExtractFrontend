@@ -1,7 +1,7 @@
 <script>
   import Select from "svelte-select";
   import { toast } from "@zerodevx/svelte-toast";
-  import {Pulse} from "svelte-loading-spinners";
+  import { Pulse } from "svelte-loading-spinners";
 
   let avatar;
   let fileinput;
@@ -10,7 +10,6 @@
   let playlistName = "";
 
   let state = "none";
-  
 
   let src =
     "https://i.pinimg.com/originals/72/39/ea/7239ea3bb245c4877a56737e572cdfcd.png";
@@ -29,19 +28,22 @@
   let leftSide = leftSideItems[0].value;
   let separatorValue = separators[0].value;
   let active = false;
-  const spotifyLogin = globalThis.SPOTIFY_LOGIN_URL
+  const spotifyLogin = globalThis.SPOTIFY_LOGIN_URL;
 
   const changeUploadStatus = status => (state = status);
 
   const onFileSelected = e => {
-    let image = e.target.files[0];
-    images.push(image.name);
-    state = "present";
-    let reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onload = e => {
-      avatar = e.target.result;
-    };
+    if (e.target.value.length !== 0) {
+      images = [];
+      let image = e.target.files[0];
+      images.push(image.name);
+      state = "present";
+      let reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = e => {
+        avatar = e.target.result;
+      };
+    }
   };
 
   const removeImage = () => {
@@ -50,10 +52,11 @@
   };
 
   async function doPost() {
-   
-    
+    console.log(images.length);
+    console.log(avatar);
+
     if (images.length == 1 && avatar !== "") {
-       active = true;
+      active = true;
       result = "";
       const blob = await fetch(avatar).then(res => res.blob());
 
@@ -65,7 +68,6 @@
       formData.append("playlistName", playlistName);
 
       try {
-        
         const res = await fetch(globalThis.API_URL, {
           method: "POST",
           body: formData
@@ -73,20 +75,20 @@
         const json = await res.json();
         const parsedJson = JSON.parse(JSON.stringify(json));
         if (parsedJson.error) {
-          active=false
+          active = false;
           toast.push(`It's ${parsedJson.code} :( ${parsedJson.error}`);
           setTimeout(() => toast.pop(), 1000);
         } else {
-          active=false
-          console.log(result)
+          active = false;
+          console.log(result);
           result = parsedJson;
           toast.push("Done!");
           setTimeout(() => toast.pop(), 750);
         }
       } catch (e) {
-        active=false
+        active = false;
         toast.push("shhhhh something went wrong");
-         setTimeout(() => toast.pop(), 750);
+        setTimeout(() => toast.pop(), 750);
       }
 
       return false;
@@ -125,10 +127,10 @@
     @apply opacity-90 bg-kinda-green;
   }
 
-  #uploadBtn{
+  #uploadBtn {
     pointer-events: none;
   }
-  #removeBtn{
+  #removeBtn {
     pointer-events: none;
   }
 </style>
@@ -150,8 +152,8 @@
 
         <div class="flex justify-center font-normal">
           <div
-           id="{active?"removeBtn":""}"
-           disabled={active}
+            id={active ? 'removeBtn' : ''}
+            disabled={active}
             on:click|preventDefault={removeImage}
             class="md:w-1/3 line-through tracking-tighter w-4/5 ml-5 md:ml-0
             cursor-pointer">
@@ -176,7 +178,7 @@
       <div class="flex justify-center align-center items-center ml-">
 
         <div
-        id="{active?"uploadBtn":""}"
+          id={active ? 'uploadBtn' : ''}
           alt="Upload button"
           class="w-1/2 md:w-1/7 my-5 focus:outline-none hover:bg-black
           hover:opacity-90 border border-black bg-black text-white p-2
@@ -253,15 +255,13 @@
         <div class="w-1/2 md:w-1/7">
 
           <button
-           disabled={active}
+            disabled={active}
             type="submit"
             on:click|preventDefault={doPost}
             class="btn-active">
             {#if active}
-            <Pulse color="#000000"/>
-            {:else}
-            Generate playlist
-            {/if}
+              <Pulse color="#000000" />
+            {:else}Generate playlist{/if}
           </button>
         </div>
       </div>
