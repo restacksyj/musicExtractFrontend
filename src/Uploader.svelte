@@ -1,7 +1,10 @@
 <script>
   import Select from "svelte-select";
-  import { toast } from "@zerodevx/svelte-toast";
   import { Pulse } from "svelte-loading-spinners";
+  import { getContext } from "svelte";
+  import { getNotificationsContext } from "svelte-notifications";
+
+  const { addNotification } = getNotificationsContext();
 
   let avatar;
   let fileinput;
@@ -76,25 +79,42 @@
         const parsedJson = JSON.parse(JSON.stringify(json));
         if (parsedJson.error) {
           active = false;
-          toast.push(`It's ${parsedJson.code} :( ${parsedJson.error}`);
-          setTimeout(() => toast.pop(), 1000);
+          addNotification({
+            text: `It's ${parsedJson.code} :( ${parsedJson.error}`,
+            position: "bottom-center",
+            removeAfter: 1500,
+            type: "danger"
+          });
+         
         } else {
           active = false;
           console.log(result);
           result = parsedJson;
-          toast.push("Done!");
-          setTimeout(() => toast.pop(), 750);
+          addNotification({
+            text: "Done! Link below",
+            position: "bottom-center",
+            removeAfter: 1500,
+            type: "success"
+          });
         }
       } catch (e) {
         active = false;
-        toast.push("shhhhh something went wrong");
-        setTimeout(() => toast.pop(), 750);
+        addNotification({
+          text: "Shhhh..something went wrong",
+          position: "bottom-center",
+          removeAfter: 1500,
+          type: "danger"
+        });
       }
 
       return false;
     } else {
-      const id = toast.push("Duhhh, I need image");
-      setTimeout(() => toast.pop(id), 750);
+      addNotification({
+        text: "Duhh,I need image",
+        position: "bottom-center",
+        removeAfter: 1500,
+        type: "danger"
+      });
     }
   }
 
@@ -116,8 +136,7 @@
     --itemIsActiveBG: black;
     --itemHoverBG: rgba(0, 0, 0, 0.1);
     --indicatorColor: white;
-    --itemActiveBackground:rgba(0, 0, 0, 0.1)
-
+    --itemActiveBackground: rgba(0, 0, 0, 0.1);
   }
 
   .btn-active {
@@ -217,7 +236,7 @@
           <p class="underline mb-1 font-bold">What's left?</p>
           <Select
             items={leftSideItems}
-             showIndicator={false}
+            showIndicator={false}
             isSearchable={false}
             selectedValue={leftSide}
             on:select={handleSelect}
@@ -230,7 +249,7 @@
         <div class="md:w-1/7 w-3/4 ">
           <p class="underline mb-1 font-bold">Separator</p>
           <Select
-          showIndicator={false}
+            showIndicator={false}
             items={separators}
             isSearchable={false}
             selectedValue={separatorValue}
@@ -253,7 +272,8 @@
             id="playlistName"
             bind:value={playlistName}
             class="w-full h-8 border-black px-4 py-5 mt-5 mb-5 items-center
-            border-3 flex-auto" />
+            border-3 flex-auto focus:outline-none focus:ring focus:ring-black
+            focus:border-transparent" />
         </div>
       </div>
 
