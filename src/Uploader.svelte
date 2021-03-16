@@ -214,6 +214,7 @@
           <p class="underline mb-1 font-bold">What's left?</p>
           <Select
             items={leftSideItems}
+            isSearchable={false}
             selectedValue={leftSide}
             on:select={handleSelect}
             isClearable={false}
@@ -226,6 +227,7 @@
           <p class="underline mb-1 font-bold">Separator</p>
           <Select
             items={separators}
+            isSearchable={false}
             selectedValue={separatorValue}
             on:select={handleSelectTwo}
             isClearable={false}
