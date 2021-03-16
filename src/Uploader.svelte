@@ -115,6 +115,9 @@
     --itemIsActiveColor: white;
     --itemIsActiveBG: black;
     --itemHoverBG: rgba(0, 0, 0, 0.1);
+    --indicatorColor: white;
+    --itemActiveBackground:rgba(0, 0, 0, 0.1)
+
   }
 
   .btn-active {
@@ -214,6 +217,7 @@
           <p class="underline mb-1 font-bold">What's left?</p>
           <Select
             items={leftSideItems}
+             showIndicator={false}
             isSearchable={false}
             selectedValue={leftSide}
             on:select={handleSelect}
@@ -226,6 +230,7 @@
         <div class="md:w-1/7 w-3/4 ">
           <p class="underline mb-1 font-bold">Separator</p>
           <Select
+          showIndicator={false}
             items={separators}
             isSearchable={false}
             selectedValue={separatorValue}
