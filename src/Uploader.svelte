@@ -296,7 +296,7 @@
     </form>
 
     <div class="flex justify-center">
-      <a href={spotifyLogin}>Log in with spotify</a>
+      <a class="md:mb-6 mb-4" href={spotifyLogin}>Log in with spotify</a>
 
     </div>
 
