@@ -110,7 +110,7 @@
       return false;
     } else {
       addNotification({
-        text: "Duhh,I need image",
+        text: "Duhh,I need an image",
         position: "bottom-center",
         removeAfter: 1500,
         type: "danger"
