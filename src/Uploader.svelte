@@ -338,7 +338,7 @@
         <div class="sm:w-2/3 text-center py-6">
           <p class="text-sm text-black mb-2">
             Made by
-            <a href="https://instagram.com/restacksyj" class="underline">
+            <a href="https://github.com/restacksyj" class="underline">
               @restacksyj
             </a>
           </p>
