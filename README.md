@@ -12,6 +12,6 @@ How to generate a playlist ?
 3. Hit generate button. You're doone :)
 
 ![Desktop view](/assets/musicExtractDesktop.png)
-![Mobile View](/assets/musicExtractMobile.png)
+
 
 > If interested in the backend, it's on [musicExtractBackend](https://github.com/restacksyj/musicExtractBackend)
