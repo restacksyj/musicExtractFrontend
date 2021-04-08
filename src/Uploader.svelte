@@ -25,7 +25,8 @@
   let separators = [
     { value: "-", label: "-" },
     { value: "=", label: "=" },
-    { value: "--", label: "--" }
+    { value: "--", label: "--" },
+    { value: "by", label: "by" },
   ];
 
   let leftSide = leftSideItems[0].value;
